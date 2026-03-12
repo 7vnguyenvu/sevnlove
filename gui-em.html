@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trúc Huyền ❤️ — Nguyễn Vũ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Sans:wght@200;300;400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #05080f;
+            --bg2: #080c16;
+            --white: #f0f3f8;
+            --dim: rgba(228, 233, 248, .85);
+            --accent: #90cce8;
+            --accent2: #d4b98a;
+            --rain: rgba(180, 210, 230, .18);
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif', serif;
+            color: var(--white);
+            cursor: none;
+            overflow: hidden;
+        }
+
+        /* ══ SLIDE CONTAINER ══ */
+        #slider {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            overscroll-behavior: none;
+        }
+
+        #slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        #slider {
+            scrollbar-width: none;
+        }
+
+        /* custom cursor */
+        #cursor {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            transform: translate(-50%, -50%);
+            transition: transform .1s ease, opacity .3s;
+            mix-blend-mode: screen;
+        }
+
+        #cursor-ring {
+            position: fixed;
+            z-index: 9998;
+            pointer-events: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid rgba(126, 184, 212, .3);
+            transform: translate(-50%, -50%);
+            transition: transform .18s ease, width .3s, height .3s, opacity .3s;
+        }
+
+        /* ══ RAIN CANVAS ══ */
+        #rain-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: .55;
+        }
+
+        /* ══ GRADIENT OVERLAY ══ */
+        .gradient-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 70% 50% at 50% 0%, rgba(126, 184, 212, .04) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 70% at 85% 80%, rgba(196, 168, 130, .04) 0%, transparent 50%);
+        }
+
+        /* ══ INTRO ══ */
+        #intro {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            transition: opacity 1.8s cubic-bezier(.4, 0, .2, 1), visibility 1.8s;
+        }
+
+        #intro.out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .intro-label {
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 200;
+            font-size: 11px;
+            letter-spacing: .5em;
+            color: rgba(126, 184, 212, .5);
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            animation: fade-up 1.2s ease .4s both;
+        }
+
+        .intro-auth {
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 200;
+            font-size: 11px;
+            color: rgb(126, 184, 212);
+            margin-bottom: 20px;
+            animation: fade-up 1.2s ease .4s both;
+        }
+
+        .intro-big {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: clamp(52px, 12vw, 100px);
+            line-height: 1;
+            color: var(--white);
+            letter-spacing: -.02em;
+            animation: fade-up 1.2s ease .6s both;
+            text-align: center;
+        }
+
+        .intro-big em {
+            color: var(--accent);
+            font-style: normal;
+        }
+
+        .intro-line {
+            width: 1px;
+            height: 0;
+            background: linear-gradient(180deg, var(--accent), transparent);
+            margin: 36px auto;
+            animation: line-grow 1.2s ease 1s both;
+        }
+
+        @keyframes line-grow {
+            from {
+                height: 0;
+                opacity: 0;
+            }
+
+            to {
+                height: 60px;
+                opacity: 1;
+            }
+        }
+
+        .intro-cta {
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 300;
+            font-size: 11px;
+            letter-spacing: .45em;
+            color: var(--white);
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 16px 36px;
+            border: 1px solid rgba(144, 204, 232, .6);
+            background: rgba(144, 204, 232, .08);
+            transition: all .4s;
+            animation: fade-up 1.2s ease 1.4s both;
+        }
+
+        .intro-cta:hover {
+            color: var(--bg);
+            background: var(--accent);
+            border-color: var(--accent);
+            letter-spacing: .6em;
+        }
+
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* ══ MAIN CONTENT ══ */
+        #content {
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        #content.visible {
+            opacity: 1;
+        }
+
+        /* ══ CHAPTER SYSTEM ══ */
+        .chapter {
+            height: 100vh;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: clamp(60px, 10vh, 120px) clamp(24px, 8vw, 80px);
+            position: relative;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* Chapter number */
+        .ch-num {
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 200;
+            font-size: 10px;
+            letter-spacing: .6em;
+            color: rgba(126, 184, 212, .4);
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+
+        .ch-num.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Chapter headline */
+        .ch-head {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: clamp(36px, 7vw, 68px);
+            line-height: 1.15;
+            letter-spacing: -.01em;
+            color: var(--white);
+            max-width: 700px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease .1s, transform 1s ease .1s;
+        }
+
+        .ch-head.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        .ch-head em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .ch-head .gold {
+            color: var(--accent2);
+        }
+
+        /* Chapter body */
+        .ch-body {
+            max-width: 560px;
+            margin-top: 32px;
+            font-size: clamp(15px, 2vw, 18px);
+            font-weight: 300;
+            line-height: 1.95;
+            color: var(--dim);
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 1s ease .25s, transform 1s ease .25s;
+        }
+
+        .ch-body.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        .ch-body em {
+            color: rgba(240, 243, 255, .95);
+            font-style: italic;
+        }
+
+        /* ══ DIVIDER LINE ══ */
+        .ch-div {
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            margin: 40px auto;
+            transition: width 1.2s ease .3s;
+        }
+
+        .ch-div.show {
+            width: 120px;
+        }
+
+        /* ══ LARGE QUOTE CHAPTER ══ */
+        .ch-quote {
+            max-width: 680px;
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: clamp(22px, 4.5vw, 40px);
+            line-height: 1.6;
+            letter-spacing: .01em;
+            color: rgba(238, 240, 245, .85);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            position: relative;
+            padding: 0 40px;
+        }
+
+        .ch-quote.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        .ch-quote::before {
+            content: '\201C';
+            position: absolute;
+            left: 0;
+            top: -10px;
+            font-size: 80px;
+            line-height: 1;
+            color: rgba(126, 184, 212, .2);
+            font-family: 'DM Serif Display', serif;
+        }
+
+        .ch-quote em {
+            color: var(--accent);
+            font-style: normal;
+        }
+
+        /* ══ SPLIT LAYOUT ══ */
+        .ch-split {
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr;
+            gap: 0 48px;
+            max-width: 800px;
+            text-align: left;
+        }
+
+        .ch-split .split-line {
+            background: rgba(126, 184, 212, .15);
+            align-self: stretch;
+            opacity: 0;
+            transition: opacity 1s ease .4s;
+        }
+
+        .ch-split .split-line.show {
+            opacity: 1;
+        }
+
+        .split-col {
+            padding: 0 8px;
+        }
+
+        .split-label {
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 200;
+            font-size: 9px;
+            letter-spacing: .6em;
+            color: rgba(126, 184, 212, .45);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            opacity: 0;
+            transition: opacity .7s ease;
+        }
+
+        .split-label.show {
+            opacity: 1;
+        }
+
+        .split-text {
+            font-size: clamp(15px, 1.8vw, 17px);
+            font-weight: 300;
+            line-height: 1.9;
+            color: var(--dim);
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity .9s ease .3s, transform .9s ease .3s;
+        }
+
+        .split-text.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        .split-text em {
+            color: rgba(240, 243, 255, .95);
+            font-style: italic;
+        }
+
+        /* ══ QUESTIONS ══ */
+        .questions-wrap {
+            max-width: 540px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .q-item-c {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid rgba(238, 240, 245, .06);
+            opacity: 0;
+            transform: translateX(-16px);
+            transition: opacity .9s ease, transform .9s ease;
+        }
+
+        .q-item-c:last-child {
+            border-bottom: none;
+        }
+
+        .q-item-c.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        .q-n {
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 200;
+            font-size: 10px;
+            letter-spacing: .3em;
+            color: var(--accent);
+            padding-top: 6px;
+            min-width: 24px;
+        }
+
+        .q-t {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: clamp(18px, 3vw, 24px);
+            line-height: 1.65;
+            color: rgba(238, 240, 245, .82);
+        }
+
+        /* ══ FINAL CHAPTER ══ */
+        .sig-wrap {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+        }
+
+        .sig-wrap.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        .sig-from {
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 200;
+            font-size: 10px;
+            letter-spacing: .6em;
+            color: rgba(196, 168, 130, .5);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .sig-name {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: clamp(48px, 10vw, 90px);
+            line-height: 1;
+            letter-spacing: -.02em;
+            color: var(--white);
+        }
+
+        .sig-name .first {
+            color: var(--accent2);
+        }
+
+        .sig-date {
+            margin-top: 20px;
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 200;
+            font-size: 10px;
+            letter-spacing: .5em;
+            color: rgba(238, 240, 245, .2);
+            text-transform: uppercase;
+        }
+
+        /* ══ PROGRESS BAR ══ */
+        #progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            width: 0%;
+            transition: width .1s linear;
+        }
+
+        /* ══ NAV BUTTONS ══ */
+        #nav-prev,
+        #nav-next {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            padding: 10px 48px;
+            transition: opacity .4s, transform .3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #nav-prev {
+            top: 8px;
+        }
+
+        #nav-next {
+            bottom: 8px;
+        }
+
+        #nav-prev.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #nav-next.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #nav-prev:hover {
+            transform: translateX(-50%) translateY(-4px);
+        }
+
+        #nav-next:hover {
+            transform: translateX(-50%) translateY(4px);
+        }
+
+        .nav-arrow {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(144, 204, 232, .5);
+            background: rgba(5, 8, 15, .7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .3s;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .5), 0 0 0 1px rgba(144, 204, 232, .08);
+        }
+
+        #nav-prev:hover .nav-arrow,
+        #nav-next:hover .nav-arrow {
+            border-color: var(--accent);
+            background: rgba(144, 204, 232, .18);
+            box-shadow: 0 0 24px rgba(144, 204, 232, .3), 0 4px 24px rgba(0, 0, 0, .5);
+        }
+
+        #nav-prev:active .nav-arrow,
+        #nav-next:active .nav-arrow {
+            transform: scale(.9);
+        }
+
+        .nav-arrow svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--accent);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nav-label {
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 300;
+            font-size: 9px;
+            letter-spacing: .45em;
+            color: rgba(144, 204, 232, .6);
+            text-transform: uppercase;
+        }
+
+        /* ══ DOT INDICATORS ══ */
+        #dots {
+            position: fixed;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #dots.visible {
+            display: flex;
+        }
+
+        .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(144, 204, 232, .25);
+            border: 1px solid rgba(144, 204, 232, .3);
+            cursor: pointer;
+            transition: all .4s;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(144, 204, 232, .5);
+            transform: scale(1.4);
+        }
+
+        .dot:hover {
+            background: rgba(144, 204, 232, .6);
+        }
+
+        /* ══ CHAPTER BG ACCENTS ══ */
+        .ch-bg-accent {
+            position: absolute;
+            pointer-events: none;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: .04;
+        }
+
+        /* ══ CLICK PARTICLES ══ */
+        .spark {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9997;
+            font-size: 14px;
+            line-height: 1;
+            transform: translate(-50%, -50%);
+            animation: spark-fly var(--dur, .9s) ease forwards;
+            will-change: transform, opacity;
+        }
+
+        @keyframes spark-fly {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) translate(0, 0) scale(1) rotate(var(--r0, 0deg));
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(var(--sf, .4)) rotate(var(--r1, 360deg));
+            }
+        }
+
+        .spark-star {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9997;
+            width: var(--sz, 6px);
+            height: var(--sz, 6px);
+            border-radius: 50%;
+            background: var(--col, #fff);
+            transform: translate(-50%, -50%);
+            animation: star-burst var(--dur, .7s) ease forwards;
+            box-shadow: 0 0 4px var(--col, #fff);
+        }
+
+        @keyframes star-burst {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) translate(0, 0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(.1);
+            }
+        }
+
+        /* cursor pulse on click */
+        #cursor.clicked {
+            animation: cur-pulse .4s ease forwards;
+        }
+
+        @keyframes cur-pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            40% {
+                transform: translate(-50%, -50%) scale(3.5);
+                opacity: .6;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        #cursor-ring.clicked {
+            animation: ring-pulse .5s ease forwards;
+        }
+
+        @keyframes ring-pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: .4;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(2.2);
+                opacity: .15;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: .3;
+            }
+        }
+
+        @media (max-width:600px) {
+            .ch-split {
+                grid-template-columns: 1fr;
+                gap: 32px 0;
+            }
+
+            .ch-split .split-line {
+                display: none;
+            }
+
+            .ch-quote {
+                padding: 0 16px;
+            }
+
+            .ch-quote::before {
+                font-size: 56px;
+            }
+
+            #dots {
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body class="no-scroll">
+
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
+    <div id="progress"></div>
+    <canvas id="rain-canvas"></canvas>
+    <div class="gradient-overlay"></div>
+
+    <!-- INTRO -->
+    <div id="intro">
+        <p class="intro-label">Tháng Ba · 2026</p>
+        <span class="intro-auth">@NguyeenVuu</span>
+        <h1 class="intro-big">Gửi <em>Em</em><br />Trúc Huyền <em>ơi..</em> </h1>
+        <div class="intro-line"></div>
+        <button class="intro-cta" onclick="openContent()">Bấm vào để đọc</button>
+    </div>
+
+
+    <!-- NAV BUTTONS -->
+    <button id="nav-prev" onclick="goSlide(currentSlide-1)">
+        <div class="nav-arrow">
+            <svg viewBox="0 0 24 24">
+                <polyline points="18 15 12 9 6 15" />
+            </svg>
+        </div>
+        <!-- <span class="nav-label">Trước</span> -->
+    </button>
+
+    <button id="nav-next" onclick="goSlide(currentSlide+1)">
+        <!-- <span class="nav-label">Tiếp</span> -->
+        <div class="nav-arrow">
+            <svg viewBox="0 0 24 24">
+                <polyline points="6 9 12 15 18 9" />
+            </svg>
+        </div>
+    </button>
+
+    <!-- DOT INDICATORS -->
+    <div id="dots"></div>
+
+    <!-- CONTENT -->
+    <div id="slider">
+        <div id="content">
+
+            <!-- Ch 1: Opening -->
+            <div class="chapter">
+                <div class="ch-bg-accent" style="width:500px;height:500px;background:var(--accent);top:-100px;right:-100px;"></div>
+                <p class="ch-num">Mở đầu</p>
+                <h2 class="ch-head">Anh sẽ <em>kể</em>...</h2>
+                <p class="ch-body">
+                    Kể cho em nghe về anh — Anh viết vài điều về bản thân để em cảm nhận và để em hiểu anh hơn chút.<br><br>
+                    Lúc nào rảnh Em đọc nha 😁
+                </p>
+            </div>
+
+            <!-- Ch 2: Tình cảm -->
+            <div class="chapter">
+                <div class="ch-bg-accent" style="width:400px;height:400px;background:var(--accent2);bottom:-50px;left:-80px;"></div>
+                <p class="ch-num">Về tình cảm</p>
+                <h2 class="ch-head">Khi đã xác định <em>tìm hiểu</em> ai đó .</h2>
+                <div class="ch-div"></div>
+                <p class="ch-body">
+                    Anh không muốn làm nó nửa vời, anh thật sự nghiêm túc. Với anh, ở bên nhau là để <em>chia sẻ</em> — kể cho nhau nghe những câu chuyện trong cuộc sống, hiểu nhau hơn qua từng ngày
+                    nhỏ
+                    bình thường.<br><br>
+                    Nhưng anh cũng không phải kiểu người muốn kiểm soát. Anh hiểu mỗi người đều cần không gian riêng của mình — chỉ cần đủ tin tưởng và rõ ràng với nhau là được.
+                </p>
+            </div>
+
+            <!-- Ch 3: Quote -->
+            <div class="chapter">
+                <blockquote class="ch-quote">
+                    Điều anh coi trọng nhất là <em>niềm tin</em>. Khi đã đặt tình cảm vào ai, anh sẽ luôn tin tưởng người đó — không phải vì người ấy phải chứng minh điều gì, mà đơn giản là vì anh đã
+                    xác định <em>chọn họ</em>.
+                </blockquote>
+            </div>
+
+            <!-- Ch 4: Split — Sợ & Muốn -->
+            <div class="chapter">
+                <p class="ch-num" style="margin-bottom:40px">Và tiếp đó</p>
+                <div class="ch-split">
+                    <div class="split-col">
+                        <p class="split-label">Điều anh sợ nhất</p>
+                        <p class="split-text">Là khi niềm tin bị mất đi. Lúc đó cảm giác sẽ rất tệ. Nên nếu có chuyện gì — dù nhỏ hay lớn — anh luôn nghĩ <em>cứ nói thẳng với nhau</em>, để tránh những
+                            hiểu lầm không đáng có.</p>
+                    </div>
+                    <div class="split-line"></div>
+                    <div class="split-col">
+                        <p class="split-label">Điều anh tìm kiếm</p>
+                        <p class="split-text">Một người mà anh cảm thấy <em>được thấu hiểu</em> khi ở cạnh. Người mang lại cảm giác an toàn và bình yên — không cần cầu kỳ, chỉ cần thật lòng.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ch 5: Con người anh -->
+            <div class="chapter">
+                <div class="ch-bg-accent" style="width:350px;height:350px;background:var(--accent);top:50%;left:-80px;transform:translateY(-50%);"></div>
+                <p class="ch-num">Con người anh</p>
+                <h2 class="ch-head">Tính khí ôn hoà, bình thường. Gặp bạn thân thì <span class="gold">khùng khùng</span> đôi chút.</h2>
+                <div class="ch-div"></div>
+                <p class="ch-body">
+                    Anh không phải kiểu người hay tụ tập nhiều. Chủ yếu là đi làm, sinh hoạt bình thường — Rượu bia thì đôi chút nhưng không phải bê tha, không thuốc lá. <em>Nhiều khi sẽ tự giải trí
+                        với chính mình,làm mấy trò con bò, blabla.</em><br><br>
+                    Sở thích cũng đơn giản: thể thao, xem phim, nghe nhạc, hát hò, đôi khi chơi cờ hoặc game.
+                </p>
+            </div>
+
+            <!-- Ch 6: Một ngày -->
+            <div class="chapter">
+                <p class="ch-num">Một ngày của anh</p>
+                <blockquote class="ch-quote" style="font-size:clamp(17px,3vw,28px)">
+                    Sáng đi làm. Chiều về phòng, ăn uống, dọn dẹp.<br>
+                    Tối rảnh thì <em>đi dạo hoặc coi phim</em> xã stress.<br>
+                    Cuối tuần — chạy về quê, hoặc mệt quá thì ngủ bù.
+                </blockquote>
+            </div>
+
+            <!-- Ch 7: Về em -->
+            <div class="chapter">
+                <div class="ch-bg-accent" style="width:500px;height:500px;background:var(--accent2);top:0;right:-100px;"></div>
+                <p class="ch-num">Và về Em</p>
+                <h2 class="ch-head">Anh thấy mình <em>khá may mắn</em> khi được làm quen với em.</h2>
+                <div class="ch-div"></div>
+                <p class="ch-body">
+                    Em có cá tính, có chút dễ thương — cách em nói chuyện làm anh thấy có thiện cảm rồi thích từ lúc nào không hay.<br><br>
+                    Anh cảm nhận em là người thích tự do và có bản sắc riêng. Điều đó anh rất tôn trọng. Anh chỉ muốn — nếu có một ngày ở bên nhau — <em>anh sẽ được mang lại cho em cảm giác thoải mái
+                        và bình yên nhất để không phải đấu tranh với áp lực từ đâu nữa.</em>
+                </p>
+            </div>
+
+            <!-- Ch 8: Questions -->
+            <div class="chapter">
+                <p class="ch-num" style="margin-bottom:40px">Anh tò mò</p>
+                <div class="questions-wrap">
+                    <div class="q-item-c">
+                        <span class="q-n">01</span>
+                        <p class="q-t">Sau khi dọc đến đây, Em thấy Anh là người như thế nào?</p>
+                    </div>
+                    <div class="q-item-c">
+                        <span class="q-n">02</span>
+                        <p class="q-t">Nếu em cảm thấy chán một người, thường là vì điều gì?</p>
+                    </div>
+                    <div class="q-item-c">
+                        <span class="q-n">03</span>
+                        <p class="q-t">Em có sợ cảm giác bị ràng buộc trong một mối quan hệ không?</p>
+                    </div>
+                    <div class="q-item-c">
+                        <span class="q-n">Đặc biệt</span>
+                        <p class="q-t">Anh mong Em có thể mở lòng đón nhận Anh vào cuộc sống của Em, và cho Anh được quan tâm Em nhiều hơn nữa!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ch 9: Signature -->
+            <div class="chapter">
+                <div class="sig-wrap">
+                    <p class="sig-from">Người viết gửi cho Em</p>
+                    <p class="sig-name"><span class="first">Nguyễn</span> Vũ</p>
+                    <p class="sig-date">Tháng Ba · 2026</p>
+                </div>
+            </div>
+
+        </div><!-- /content -->
+    </div><!-- /slider -->
+
+    <script>
+        /* ── cursor ── */
+        const cur = document.getElementById('cursor');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0;
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+            ring.style.left = mx + 'px'; ring.style.top = my + 'px';
+        });
+
+        /* ── click particles ── */
+        const HEARTS = ['♥', '❤', '💕', '💗', '💖', '♡', '💓'];
+        const SPARKLES = ['✦', '✧', '⋆', '★', '✶', '✸', '✺', '·'];
+        const STAR_COLORS = ['#90cce8', '#d4b98a', '#f0a0b0', '#c8e8ff', '#ffd6e0', '#ffffff', '#ffe4a0'];
+
+        function spawnClickParticles(x, y) {
+            /* 1. pulse cursor */
+            cur.classList.remove('clicked');
+            ring.classList.remove('clicked');
+            void cur.offsetWidth; // reflow
+            cur.classList.add('clicked');
+            ring.classList.add('clicked');
+            setTimeout(() => { cur.classList.remove('clicked'); ring.classList.remove('clicked'); }, 500);
+
+            /* 2. hearts burst (3-5) */
+            const hCount = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < hCount; i++) {
+                const el = document.createElement('div');
+                el.className = 'spark';
+                el.textContent = HEARTS[Math.floor(Math.random() * HEARTS.length)];
+                const angle = (Math.PI * 2 / hCount) * i + (Math.random() - .5) * .6;
+                const dist = 40 + Math.random() * 55;
+                const dur = (.6 + Math.random() * .5).toFixed(2);
+                el.style.cssText = `
+      left:${x}px; top:${y}px;
+      font-size:${10 + Math.random() * 12}px;
+      --dx:${(Math.cos(angle) * dist).toFixed(1)}px;
+      --dy:${(Math.sin(angle) * dist - 20).toFixed(1)}px;
+      --r0:${Math.round(Math.random() * 30 - 15)}deg;
+      --r1:${Math.round(Math.random() * 120 - 60)}deg;
+      --sf:${(.3 + Math.random() * .4).toFixed(2)};
+      --dur:${dur}s;
+    `;
+                document.body.appendChild(el);
+                el.addEventListener('animationend', () => el.remove());
+            }
+
+            /* 3. sparkle text (2-4) */
+            const sCount = 2 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < sCount; i++) {
+                const el = document.createElement('div');
+                el.className = 'spark';
+                el.textContent = SPARKLES[Math.floor(Math.random() * SPARKLES.length)];
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 25 + Math.random() * 45;
+                const dur = (.5 + Math.random() * .4).toFixed(2);
+                el.style.cssText = `
+      left:${x}px; top:${y}px;
+      font-size:${8 + Math.random() * 10}px;
+      color:${STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)]};
+      --dx:${(Math.cos(angle) * dist).toFixed(1)}px;
+      --dy:${(Math.sin(angle) * dist).toFixed(1)}px;
+      --r0:0deg; --r1:${Math.round(Math.random() * 180)}deg;
+      --sf:.2; --dur:${dur}s;
+    `;
+                document.body.appendChild(el);
+                el.addEventListener('animationend', () => el.remove());
+            }
+
+            /* 4. glitter dots (5-8) */
+            const gCount = 5 + Math.floor(Math.random() * 4);
+            for (let i = 0; i < gCount; i++) {
+                const el = document.createElement('div');
+                el.className = 'spark-star';
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 20 + Math.random() * 50;
+                const sz = (3 + Math.random() * 5).toFixed(1);
+                const col = STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
+                const dur = (.4 + Math.random() * .5).toFixed(2);
+                el.style.cssText = `
+      left:${x}px; top:${y}px;
+      --sz:${sz}px; --col:${col};
+      --dx:${(Math.cos(angle) * dist).toFixed(1)}px;
+      --dy:${(Math.sin(angle) * dist).toFixed(1)}px;
+      --dur:${dur}s;
+    `;
+                document.body.appendChild(el);
+                el.addEventListener('animationend', () => el.remove());
+            }
+        }
+
+        document.addEventListener('click', e => spawnClickParticles(e.clientX, e.clientY));
+
+
+        /* ── rain ── */
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+        let drops = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function initDrops() {
+            drops = [];
+            const count = Math.floor(window.innerWidth / 8);
+            for (let i = 0; i < count; i++) {
+                drops.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    len: Math.random() * 18 + 8,
+                    speed: Math.random() * 2 + 1.5,
+                    opacity: Math.random() * .35 + .05,
+                    width: Math.random() * .6 + .2
+                });
+            }
+        }
+        initDrops();
+
+        function drawRain() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drops.forEach(d => {
+                ctx.beginPath();
+                ctx.moveTo(d.x, d.y);
+                ctx.lineTo(d.x - d.len * .15, d.y + d.len);
+                ctx.strokeStyle = `rgba(180,210,230,${d.opacity})`;
+                ctx.lineWidth = d.width;
+                ctx.stroke();
+                d.y += d.speed;
+                d.x -= d.speed * .15;
+                if (d.y > canvas.height) {
+                    d.y = -d.len;
+                    d.x = Math.random() * canvas.width;
+                }
+            });
+            requestAnimationFrame(drawRain);
+        }
+        drawRain();
+
+        /* ── slide system ── */
+        let currentSlide = 0;
+        let slides = [];
+        let isScrolling = false;
+
+        function buildSlides() {
+            slides = Array.from(document.querySelectorAll('.chapter'));
+            // build dots
+            const dotsEl = document.getElementById('dots');
+            dotsEl.innerHTML = '';
+            slides.forEach((_, i) => {
+                const d = document.createElement('div');
+                d.className = 'dot' + (i === 0 ? ' active' : '');
+                d.onclick = () => goSlide(i);
+                dotsEl.appendChild(d);
+            });
+        }
+
+        function goSlide(idx) {
+            if (isScrolling) return;
+            idx = Math.max(0, Math.min(idx, slides.length - 1));
+            if (idx === currentSlide) return;
+            isScrolling = true;
+            currentSlide = idx;
+            const slider = document.getElementById('slider');
+            slider.scrollTo({ top: slides[idx].offsetTop, behavior: 'smooth' });
+            updateNav();
+            revealSlide(idx);
+            setTimeout(() => { isScrolling = false; }, 800);
+        }
+
+        function updateNav() {
+            const prev = document.getElementById('nav-prev');
+            const next = document.getElementById('nav-next');
+            const dotsEl = document.getElementById('dots');
+            prev.classList.toggle('visible', currentSlide > 0);
+            next.classList.toggle('visible', currentSlide < slides.length - 1);
+            dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+            const pct = slides.length > 1 ? (currentSlide / (slides.length - 1) * 100) : 0;
+            document.getElementById('progress').style.width = pct + '%';
+        }
+
+        function revealSlide(idx) {
+            const slide = slides[idx];
+            const targets = slide.querySelectorAll('.ch-num,.ch-head,.ch-body,.ch-div,.ch-quote,.split-label,.split-text,.split-line,.q-item-c,.sig-wrap');
+            targets.forEach((el, i) => {
+                setTimeout(() => el.classList.add('show'), i * 80);
+            });
+        }
+
+        /* keyboard nav */
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('intro').classList.contains('out')) return;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') goSlide(currentSlide + 1);
+            if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') goSlide(currentSlide - 1);
+        });
+
+        /* wheel nav */
+        let wheelTimer = null;
+        document.getElementById('slider').addEventListener('wheel', e => {
+            e.preventDefault();
+            if (!document.getElementById('intro').classList.contains('out')) return;
+            clearTimeout(wheelTimer);
+            wheelTimer = setTimeout(() => {
+                goSlide(currentSlide + (e.deltaY > 0 ? 1 : -1));
+            }, 50);
+        }, { passive: false });
+
+        /* touch swipe */
+        let touchStartY = 0;
+        document.getElementById('slider').addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+        document.getElementById('slider').addEventListener('touchend', e => {
+            const dy = touchStartY - e.changedTouches[0].clientY;
+            if (Math.abs(dy) > 40) goSlide(currentSlide + (dy > 0 ? 1 : -1));
+        }, { passive: true });
+
+        /* ── open ── */
+        function openContent() {
+            document.getElementById('intro').classList.add('out');
+            document.body.classList.remove('no-scroll');
+            document.getElementById('content').classList.add('visible');
+            document.getElementById('dots').classList.add('visible');
+            setTimeout(() => {
+                buildSlides();
+                updateNav();
+                revealSlide(0);
+            }, 400);
+        }
+
+        /* ── scroll reveal (IntersectionObserver as fallback) ── */
+        function initObserver() { }
+
+    </script>
+</body>
+
+</html>

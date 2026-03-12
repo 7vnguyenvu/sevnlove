@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vũ & Huyền 💕 Đếm Ngày Bên Em</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Dancing+Script:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --rose: #e8547a;
+            --rose-light: #f4829e;
+            --rose-deep: #c23a60;
+            --blush: #fce4ec;
+            --cream: #fff8f0;
+            --gold: #d4a853;
+            --gold-light: #f0cb7a;
+            --deep: #2d1b2e;
+            --text: #4a2040;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a0a14 0%, #2d1020 30%, #1a0a14 60%, #200d18 100%);
+            min-height: 100vh;
+            font-family: 'Cormorant Garamond', serif;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #f4829e, #e8547a);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 15px rgba(232, 84, 122, 0.6);
+        }
+
+        /* Canvas particles */
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Stars background */
+        .stars {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 30% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 50% 40%, rgba(255, 255, 255, 0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 70% 10%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 90% 60%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 20% 50%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 60% 90%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 80% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 45% 65%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 15% 85%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header section */
+        .header {
+            text-align: center;
+            padding: 60px 20px 30px;
+            position: relative;
+        }
+
+        .subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            color: var(--rose-light);
+            letter-spacing: 3px;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.3s forwards;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 700;
+            font-style: italic;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--rose-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.6s forwards;
+            text-shadow: none;
+            filter: drop-shadow(0 0 30px rgba(212, 168, 83, 0.3));
+        }
+
+        .names {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            color: var(--rose-light);
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeUp 1s ease 0.9s forwards;
+        }
+
+        .heart-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            opacity: 0;
+            animation: fadeUp 1s ease 1.2s forwards;
+        }
+
+        .heart-divider::before,
+        .heart-divider::after {
+            content: '';
+            height: 1px;
+            width: 100px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .heart-divider span {
+            font-size: 1.5rem;
+            animation: heartbeat 1.5s ease infinite;
+        }
+
+        /* COUNTDOWN */
+        .countdown-section {
+            padding: 40px 20px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeUp 1s ease 1.5s forwards;
+        }
+
+        .countdown-label {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: var(--gold-light);
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .countdown-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: clamp(10px, 3vw, 30px);
+            flex-wrap: nowrap;
+        }
+
+        .time-block {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .time-card {
+            position: relative;
+            width: clamp(80px, 18vw, 160px);
+            height: clamp(90px, 20vw, 180px);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            box-shadow:
+                0 0 40px rgba(232, 84, 122, 0.15),
+                0 0 80px rgba(232, 84, 122, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .time-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(212, 168, 83, 0.1), transparent 60%);
+            pointer-events: none;
+        }
+
+        .time-card::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: rgba(212, 168, 83, 0.2);
+        }
+
+        .time-number {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 8vw, 6rem);
+            font-weight: 700;
+            background: linear-gradient(180deg, #fff8f0, var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 0 20px rgba(212, 168, 83, 0.5));
+        }
+
+        .time-number.flip {
+            animation: flipNum 0.4s ease;
+        }
+
+        .time-label {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(0.7rem, 2vw, 1rem);
+            color: var(--rose-light);
+            margin-top: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .separator {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            color: var(--rose);
+            animation: blink 1.5s ease infinite;
+            padding-bottom: 30px;
+            filter: drop-shadow(0 0 10px rgba(232, 84, 122, 0.8));
+        }
+
+        /* Roses decorating countdown */
+        .rose-decor {
+            position: absolute;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: float 4s ease infinite;
+        }
+
+        /* Start date note */
+        .start-note {
+            margin-top: 25px;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            color: rgba(244, 130, 158, 0.7);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            letter-spacing: 1px;
+        }
+
+        .start-note span {
+            color: var(--gold-light);
+        }
+
+        /* GALLERY */
+        .gallery-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeUp 1s ease 2s forwards;
+        }
+
+        .gallery-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-style: italic;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+
+        .gallery-subtitle {
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--rose-light);
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        .photo-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            background: linear-gradient(145deg, rgba(232, 84, 122, 0.1), rgba(45, 27, 46, 0.5));
+            border: 1px solid rgba(212, 168, 83, 0.2);
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .photo-card:nth-child(1) {
+            grid-row: span 2;
+            aspect-ratio: 4/9;
+        }
+
+        .photo-card:nth-child(4) {
+            grid-column: span 2;
+            aspect-ratio: 8/5;
+        }
+
+        .photo-card:hover {
+            transform: scale(1.03) translateY(-5px);
+            box-shadow: 0 20px 60px rgba(232, 84, 122, 0.3);
+            border-color: rgba(212, 168, 83, 0.5);
+            z-index: 10;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(145deg, rgba(232, 84, 122, 0.08), rgba(45, 27, 46, 0.6));
+        }
+
+        .photo-placeholder .icon {
+            font-size: 2.5rem;
+            opacity: 0.5;
+        }
+
+        .photo-placeholder .photo-hint {
+            font-family: 'Dancing Script', cursive;
+            font-size: 0.9rem;
+            color: rgba(244, 130, 158, 0.5);
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        /* Decor overlays on photo cards */
+        .card-decor {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .card-decor::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: linear-gradient(to top, rgba(45, 16, 32, 0.7) 0%, transparent 50%);
+        }
+
+        .corner-roses {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            animation: sway 3s ease infinite;
+            filter: drop-shadow(0 0 5px rgba(232, 84, 122, 0.8));
+        }
+
+        .corner-roses-bl {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 1rem;
+            animation: sway 3.5s ease infinite reverse;
+            filter: drop-shadow(0 0 5px rgba(232, 84, 122, 0.8));
+        }
+
+        .sparkles {
+            position: absolute;
+            top: 15px;
+            left: 12px;
+            font-size: 0.9rem;
+            animation: twinkle 2s ease infinite;
+        }
+
+        .card-caption {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.85);
+            z-index: 3;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Add photo note */
+        .photo-note {
+            text-align: center;
+            margin-top: 30px;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            color: rgba(244, 130, 158, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .footer-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-style: italic;
+            color: rgba(240, 203, 122, 0.8);
+            max-width: 600px;
+            margin: 0 auto 20px;
+            line-height: 1.6;
+        }
+
+        .footer-names {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            background: linear-gradient(135deg, var(--rose-light), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes heartbeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        @keyframes flipNum {
+            0% {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(10deg);
+            }
+        }
+
+        @keyframes sway {
+
+            0%,
+            100% {
+                transform: rotate(-10deg);
+            }
+
+            50% {
+                transform: rotate(10deg);
+            }
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.3;
+                transform: scale(0.7);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        /* Floating roses */
+        .floating-roses-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-rose {
+            position: absolute;
+            font-size: 1.2rem;
+            opacity: 0;
+            animation: roseFloat linear infinite;
+            filter: drop-shadow(0 0 6px rgba(232, 84, 122, 0.5));
+        }
+
+        @keyframes roseFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.8;
+            }
+
+            90% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Glowing orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(232, 84, 122, 0.12), transparent 70%);
+            top: -100px;
+            left: -100px;
+            animation: orbMove 8s ease infinite alternate;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.1), transparent 70%);
+            bottom: 200px;
+            right: -50px;
+            animation: orbMove 10s ease infinite alternate-reverse;
+        }
+
+        .orb-3 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(232, 84, 122, 0.06), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: orbMove 12s ease infinite;
+        }
+
+        @keyframes orbMove {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(50px, 30px);
+            }
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 85vh;
+            border-radius: 12px;
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            box-shadow: 0 0 60px rgba(232, 84, 122, 0.3);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2rem;
+            color: var(--rose-light);
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Upload area styles */
+        .upload-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-overlay input {
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="stars"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <canvas id="canvas"></canvas>
+    <div class="floating-roses-container" id="rosesContainer"></div>
+
+    <div class="content">
+
+        <!-- Header -->
+        <div class="header">
+            <p class="subtitle">✦ Câu chuyện tình yêu của chúng mình ✦</p>
+            <h1 class="title">Đếm Ngày Bên Em</h1>
+            <p class="names">Vũ &nbsp;♡&nbsp; Huyền</p>
+            <div class="heart-divider">
+                <span>💕</span>
+            </div>
+        </div>
+
+        <!-- Countdown -->
+        <div class="countdown-section">
+            <p class="countdown-label">💫 Chúng mình đã bên nhau được 💫</p>
+
+            <div class="countdown-wrapper">
+                <div class="time-block">
+                    <div class="time-card">
+                        <div class="time-number" id="days">000</div>
+                    </div>
+                    <div class="time-label">Ngày</div>
+                </div>
+
+                <div class="separator">:</div>
+
+                <div class="time-block">
+                    <div class="time-card">
+                        <div class="time-number" id="hours">00</div>
+                    </div>
+                    <div class="time-label">Giờ</div>
+                </div>
+
+                <div class="separator">:</div>
+
+                <div class="time-block">
+                    <div class="time-card">
+                        <div class="time-number" id="minutes">00</div>
+                    </div>
+                    <div class="time-label">Phút</div>
+                </div>
+
+                <div class="separator">:</div>
+
+                <div class="time-block">
+                    <div class="time-card">
+                        <div class="time-number" id="seconds">00</div>
+                    </div>
+                    <div class="time-label">Giây</div>
+                </div>
+            </div>
+
+            <p class="start-note">Kể từ <span>16:00 — 22 tháng 02 năm 2026</span> — ngày chúng mình thành đôi 🌹</p>
+        </div>
+
+        <!-- Gallery -->
+        <div class="gallery-section">
+            <h2 class="gallery-title">Kỷ Niệm Của Chúng Mình</h2>
+            <p class="gallery-subtitle">✦ Mỗi tấm ảnh là một mảnh ghép của tình yêu ✦</p>
+
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Card 1 -->
+                <div class="photo-card" onclick="handleCardClick(this, 0)">
+                    <div class="upload-overlay"><input type="file" accept="image/*" onchange="loadImage(event, 0)" onclick="event.stopPropagation()"></div>
+                    <div class="photo-placeholder">
+                        <div class="icon">📷</div>
+                        <div class="photo-hint">Ảnh của Vũ & Huyền</div>
+                    </div>
+                    <div class="card-decor">
+                        <span class="corner-roses">🌹</span>
+                        <span class="sparkles">✨</span>
+                        <span class="corner-roses-bl">🌸</span>
+                    </div>
+                    <div class="card-caption">Cùng nhau ✨</div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="photo-card" onclick="handleCardClick(this, 1)">
+                    <div class="upload-overlay"><input type="file" accept="image/*" onchange="loadImage(event, 1)" onclick="event.stopPropagation()"></div>
+                    <div class="photo-placeholder">
+                        <div class="icon">💑</div>
+                        <div class="photo-hint">Khoảnh khắc ngọt ngào</div>
+                    </div>
+                    <div class="card-decor">
+                        <span class="corner-roses">💕</span>
+                        <span class="sparkles">🌟</span>
+                        <span class="corner-roses-bl">✨</span>
+                    </div>
+                    <div class="card-caption">Ngọt ngào lắm 💕</div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="photo-card" onclick="handleCardClick(this, 2)">
+                    <div class="upload-overlay"><input type="file" accept="image/*" onchange="loadImage(event, 2)" onclick="event.stopPropagation()"></div>
+                    <div class="photo-placeholder">
+                        <div class="icon">🌹</div>
+                        <div class="photo-hint">Kỷ niệm đáng nhớ</div>
+                    </div>
+                    <div class="card-decor">
+                        <span class="corner-roses">🌺</span>
+                        <span class="sparkles">💫</span>
+                        <span class="corner-roses-bl">🌹</span>
+                    </div>
+                    <div class="card-caption">Mãi nhớ 🌹</div>
+                </div>
+
+                <!-- Card 4 (wide) -->
+                <div class="photo-card" onclick="handleCardClick(this, 3)">
+                    <div class="upload-overlay"><input type="file" accept="image/*" onchange="loadImage(event, 3)" onclick="event.stopPropagation()"></div>
+                    <div class="photo-placeholder">
+                        <div class="icon">🥰</div>
+                        <div class="photo-hint">Cùng nhau khám phá thế giới</div>
+                    </div>
+                    <div class="card-decor">
+                        <span class="corner-roses">💝</span>
+                        <span class="sparkles">⭐</span>
+                        <span class="corner-roses-bl">🌸</span>
+                    </div>
+                    <div class="card-caption">Bên em mãi mãi 💝</div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="photo-card" onclick="handleCardClick(this, 4)">
+                    <div class="upload-overlay"><input type="file" accept="image/*" onchange="loadImage(event, 4)" onclick="event.stopPropagation()"></div>
+                    <div class="photo-placeholder">
+                        <div class="icon">💌</div>
+                        <div class="photo-hint">Tình yêu là đây</div>
+                    </div>
+                    <div class="card-decor">
+                        <span class="corner-roses">🌷</span>
+                        <span class="sparkles">✨</span>
+                        <span class="corner-roses-bl">💕</span>
+                    </div>
+                    <div class="card-caption">Yêu em 💌</div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="heart-divider" style="margin-bottom:30px;"><span>💕</span></div>
+            <p class="footer-quote">"Em là nhà của anh, là nơi anh muốn trở về sau mỗi ngày dài..."</p>
+            <br>
+            <p class="footer-names">Vũ ♡ Huyền — Mãi mãi 🌹</p>
+            <br><br>
+            <p style="color:rgba(244,130,158,0.3);font-size:0.8rem;letter-spacing:2px;">22.02.2026 — ∞</p>
+        </div>
+
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <div class="lightbox-close" onclick="closeLightbox()">×</div>
+        <img id="lightboxImg" src="" alt="">
+    </div>
+
+    <script>
+        // ========= CURSOR =========
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // ========= COUNTDOWN =========
+        const startDate = new Date('2026-02-22T16:00:00');
+
+        function pad(n, w = 2) { return String(n).padStart(w, '0'); }
+
+        let prevSeconds = -1;
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = now - startDate;
+
+            if (diff < 0) {
+                document.getElementById('days').textContent = '000';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                return;
+            }
+
+            const totalSeconds = Math.floor(diff / 1000);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            const dEl = document.getElementById('days');
+            const hEl = document.getElementById('hours');
+            const mEl = document.getElementById('minutes');
+            const sEl = document.getElementById('seconds');
+
+            dEl.textContent = pad(days, 3);
+            hEl.textContent = pad(hours);
+            mEl.textContent = pad(minutes);
+
+            if (seconds !== prevSeconds) {
+                sEl.textContent = pad(seconds);
+                sEl.classList.remove('flip');
+                void sEl.offsetWidth;
+                sEl.classList.add('flip');
+                prevSeconds = seconds;
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // ========= FLOATING ROSES =========
+        const emojis = ['🌹', '🌸', '💕', '✨', '💫', '🌷', '❤️', '💝'];
+        const container = document.getElementById('rosesContainer');
+
+        function createRose() {
+            const el = document.createElement('div');
+            el.className = 'floating-rose';
+            el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+            el.style.animationDuration = (8 + Math.random() * 12) + 's';
+            el.style.animationDelay = (Math.random() * 5) + 's';
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 25000);
+        }
+
+        setInterval(createRose, 1200);
+        for (let i = 0; i < 8; i++) setTimeout(createRose, i * 300);
+
+        // ========= CANVAS HEARTS =========
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const particles = [];
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x || Math.random() * canvas.width;
+                this.y = y || Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = -(Math.random() * 0.8 + 0.3);
+                this.alpha = Math.random() * 0.5 + 0.2;
+                this.decay = Math.random() * 0.005 + 0.003;
+                this.color = Math.random() > 0.5 ? '#e8547a' : '#d4a853';
+                this.isHeart = Math.random() > 0.6;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                if (this.isHeart) {
+                    ctx.font = (this.size * 5) + 'px serif';
+                    ctx.fillText('♥', this.x, this.y);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+            }
+        }
+
+        // Spawn particles on click
+        document.addEventListener('click', (e) => {
+            for (let i = 0; i < 8; i++) {
+                const p = new Particle(e.clientX + (Math.random() - 0.5) * 20, e.clientY + (Math.random() - 0.5) * 20);
+                p.size = Math.random() * 4 + 2;
+                particles.push(p);
+            }
+        });
+
+        // Ambient particles
+        setInterval(() => {
+            if (particles.length < 60) {
+                particles.push(new Particle());
+            }
+        }, 300);
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].alpha <= 0) particles.splice(i, 1);
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // ========= GALLERY =========
+        const images = new Array(5).fill(null);
+
+        function handleCardClick(card, idx) {
+            if (images[idx]) {
+                openLightbox(images[idx]);
+            }
+        }
+
+        function loadImage(event, idx) {
+            event.stopPropagation();
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                images[idx] = e.target.result;
+                const cards = document.querySelectorAll('.photo-card');
+                const card = cards[idx];
+                const placeholder = card.querySelector('.photo-placeholder');
+                if (placeholder) placeholder.style.display = 'none';
+                let img = card.querySelector('img.loaded-img');
+                if (!img) {
+                    img = document.createElement('img');
+                    img.className = 'loaded-img';
+                    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+                    card.insertBefore(img, card.querySelector('.card-decor'));
+                }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function openLightbox(src) {
+            document.getElementById('lightboxImg').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>
